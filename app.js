@@ -12,7 +12,7 @@ class Node {
 
 class Tree {
   constructor(root) {
-    this.root = root;
+    this.root = this.buildTree(root);
   }
 
   buildTree(array) {
@@ -66,10 +66,45 @@ class Tree {
 
     return root;
   }
+
+  insert(value) {
+    // main root
+    const root = this.root;
+    // reference to main root that we can use to traverse the tree and insert value without altering the whole tree
+    let currentRoot = root;
+
+    // loop while the inserted value isn't equal to the current root value
+    // here a while(true) loop could've worked but currentRoot.data !== value covers the case where the inserted value is already in the tree as well
+    while (currentRoot.data !== value) {
+      // check if value should go to the left
+      if (value < currentRoot.data) {
+        // if leaf node is found then create a new node and add it to the leaf node then return
+        if (currentRoot.left === null) {
+          currentRoot.left = new Node(value);
+          return;
+        } else {
+          // otherwise traverse the tree to the left
+          currentRoot = currentRoot.left;
+        }
+      } else {
+        // check if value should go to the right
+        // if leaf node is found then create a new node and add it to the leaf node then return
+        if (currentRoot.right === null) {
+          currentRoot.right = new Node(value);
+          return;
+        } else {
+          // otherwise traverse the tree to the right
+          currentRoot = currentRoot.right;
+        }
+      }
+    }
+  }
+
+  deleteItem(value) {}
 }
 
-//testing CLI
-const tree = new Tree();
+//testing in CLI
+const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 
 // print a structured tree to visualize the BST easier
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -85,6 +120,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
-console.log(
-  prettyPrint(tree.buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]))
-);
+console.log(tree.insert(6));
+console.log(tree.root);
+console.log(prettyPrint(tree.root));
