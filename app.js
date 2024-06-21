@@ -100,11 +100,119 @@ class Tree {
     }
   }
 
-  deleteItem(value) {}
+  deleteItem(value) {
+    // main root
+    const root = this.root;
+    // reference to main root that can be used to traverse the tree and get values without altering the whole tree
+    let currentRoot = root;
+    let previousRoot;
+
+    try {
+      // traverse the tree until value is found
+      while (currentRoot.data !== value) {
+        if (value < currentRoot.data) {
+          previousRoot = currentRoot;
+          currentRoot = currentRoot.left;
+        } else {
+          previousRoot = currentRoot;
+          currentRoot = currentRoot.right;
+        }
+      }
+    } catch (error) {
+      // if value not in the tree return message
+      return "Value not in the tree";
+    }
+
+    // case 1: delete value in leaf node
+    if (
+      // check if value is smaller than previous root and update previous root left side if yes
+      previousRoot &&
+      value < previousRoot.data &&
+      currentRoot.left === null &&
+      currentRoot.right === null
+    ) {
+      previousRoot.left = null;
+      return;
+    } else if (
+      // check if value is greater than previous root and update previous root right side if yes
+      previousRoot &&
+      value > previousRoot.data &&
+      currentRoot.left === null &&
+      currentRoot.right === null
+    ) {
+      previousRoot.right = null;
+      return;
+    }
+
+    // case 2: delete value when parent has 1 child
+    if (
+      // check if current root has child to the left and nothing to the right
+      previousRoot &&
+      currentRoot.left !== null &&
+      currentRoot.right === null
+    ) {
+      // if current root value is higher than previous root value then update right node
+      if (currentRoot.data > previousRoot.data) {
+        previousRoot.right = currentRoot.left;
+        return;
+      } else {
+        // else update left node
+        previousRoot.left = currentRoot.left;
+        return;
+      }
+    } else if (
+      // check if current root has child to the right and nothing to the left
+      previousRoot &&
+      currentRoot.right !== null &&
+      currentRoot.left === null
+    ) {
+      // if current root value is higher than previous root value then update right node
+      if (currentRoot.data > previousRoot.data) {
+        previousRoot.right = currentRoot.right;
+        return;
+      } else {
+        // else update left node
+        previousRoot.left = currentRoot.right;
+        return;
+      }
+    }
+
+    // case 3: delete value when parent has 2 children
+    // findSmallest is used to move once to the right side of current root
+    let findSmallest = currentRoot.right;
+    // used to reference previous node
+    let temp;
+
+    while (findSmallest.left !== null) {
+      // loop until smallest value is found
+      temp = findSmallest;
+      findSmallest = findSmallest.left;
+    }
+
+    // if smallest value is a leaf node then replace value that needs removing with leaf node value and update previous node
+    if (findSmallest.left === null && findSmallest.right === null) {
+      currentRoot.data = findSmallest.data;
+      temp.left = null;
+      return;
+    }
+
+    if (temp) {
+      // if temp is not falsy then update left side of previous node with the right side of findSmallest node and replace the value that needs deleting with the value of findSmallest
+      temp.left = findSmallest.right;
+      currentRoot.data = findSmallest.data;
+      return;
+    }
+    // otherwise update right side of current root with what is on the right side of the smallest node and update the current root with smallest value found
+    currentRoot.right = findSmallest.right;
+    currentRoot.data = findSmallest.data;
+  }
 }
 
 //testing in CLI
-const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+const projectArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+const practiceArray = [50];
+
+const tree = new Tree(projectArray);
 
 // print a structured tree to visualize the BST easier
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -120,6 +228,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
-console.log(tree.insert(6));
 console.log(tree.root);
 console.log(prettyPrint(tree.root));
