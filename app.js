@@ -206,6 +206,21 @@ class Tree {
     currentRoot.right = findSmallest.right;
     currentRoot.data = findSmallest.data;
   }
+
+  find(value) {
+    let root = this.root;
+
+    // traverse the tree until value is found
+    while (root && root.data !== value) {
+      if (value < root.data) {
+        root = root.left;
+      } else {
+        root = root.right;
+      }
+    }
+
+    if (root) return root;
+  }
 }
 
 //testing in CLI
