@@ -221,6 +221,35 @@ class Tree {
 
     if (root) return root;
   }
+
+  levelOrder(callback) {
+    let root = this.root;
+
+    if (root === null) return null;
+
+    // put node into the queue
+    let q = [root];
+    let visitedNodes = [];
+
+    while (q.length > 0) {
+      // while the queue is not empty
+      // get first element from the queue
+      let node = q.shift();
+      if (callback) {
+        // if a callback is passed as an argument run the callback on the current queue element
+        callback(node);
+      } else {
+        // otherwise push the value of the element to an array
+        visitedNodes.push(node.data);
+      }
+      // push left and right node to the queue
+      if (node.left !== null) q.push(node.left);
+      if (node.right !== null) q.push(node.right);
+    }
+
+    // return an array of the visited nodes
+    if (visitedNodes.length > 0) return visitedNodes;
+  }
 }
 
 //testing in CLI
@@ -245,3 +274,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 console.log(tree.root);
 console.log(prettyPrint(tree.root));
+console.log(tree.levelOrder());
