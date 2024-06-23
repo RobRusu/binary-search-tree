@@ -250,6 +250,121 @@ class Tree {
     // return an array of the visited nodes
     if (visitedNodes.length > 0) return visitedNodes;
   }
+
+  inOrder(callback) {
+    let currentNode = this.root;
+
+    // initiate stack with first node (root node)
+    let stack = [currentNode];
+    let array = [];
+
+    // while there are elements in the stack, loop
+    while (stack.length > 0) {
+      // if there is an element to the left of current node, push it on top of the stack
+      if (currentNode.left !== null) {
+        currentNode = currentNode.left;
+        stack.push(currentNode);
+      } else {
+        // pop the element that's on top of the stack and check if there is a callback passed onto the function
+        let node = stack.pop();
+        if (callback) {
+          // if there is a callback then run it on the node
+          callback(node);
+        } else {
+          // otherwise push the node value onto the array
+          array.push(node.data);
+        }
+        // if the right of current node is not empty/null then move to that node and push that node onto the stack
+        if (node.right !== null) {
+          currentNode = node.right;
+          stack.push(node.right);
+        }
+      }
+    }
+
+    // return in order array of elements
+    if (array.length > 0) return array;
+  }
+
+  preOrder(callback) {
+    let currentNode = this.root;
+
+    // initiate stack with first node (root node)
+    let stack = [currentNode];
+    let array = [];
+
+    // while there are elements in the stack, loop
+    while (stack.length > 0) {
+      // if there is an element to the left of current node, push current node data to array, move to left node and push it on the stack
+      if (currentNode.left !== null) {
+        array.push(currentNode.data);
+        currentNode = currentNode.left;
+        stack.push(currentNode);
+      } else {
+        // pop the element that's on top of the stack and check if there is a callback passed onto the function
+        let node = stack.pop();
+        if (callback) {
+          // if there is a callback then run it on the node
+          callback(node);
+        }
+        // if the right of current node is not empty/null then push current node that to array, move to right node and push that node onto the stack
+        if (node.right !== null) {
+          array.push(currentNode.data);
+          currentNode = node.right;
+          stack.push(currentNode);
+        }
+
+        // push last element to the array if stack is empty
+        if (stack.length === 0) array.push(currentNode.data);
+      }
+    }
+
+    // return array of elements in pre order
+    if (array.length > 0) return array;
+  }
+  postOrder(callback) {
+    let currentNode = this.root;
+
+    // initiate stack with first node (root node)
+    let stack = [currentNode];
+    let array = [];
+
+    // while there are elements in the stack, loop
+    while (stack.length > 0) {
+      // if there is an element to the left of current node, move to left node and push it on the stack
+      if (currentNode.left !== null) {
+        currentNode = currentNode.left;
+        stack.push(currentNode);
+        // if there is an element to the right of current node, move to right node and push it on the stack
+      } else if (currentNode.right !== null) {
+        currentNode = currentNode.right;
+        stack.push(currentNode);
+      } else {
+        // otherwise pop the element from the top of the stack
+        let node = stack.pop();
+
+        // check if there are elements on the right side and the value on the right side hasn't been visited yet
+        if (node.right !== null && !array.includes(node.right.data)) {
+          // push the node back onto the stack
+          stack.push(node);
+          currentNode = node.right;
+          // push right side node onto the stack
+          stack.push(currentNode);
+        } else {
+          if (callback) {
+            // if there is a callback then run it on the node and push value into the array
+            callback(node);
+            array.push(node.data);
+          } else {
+            array.push(node.data);
+          }
+        }
+      }
+    }
+
+    // return array of elements in post order
+    return array;
+  }
 }
 
 //testing in CLI
@@ -274,4 +389,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 console.log(tree.root);
 console.log(prettyPrint(tree.root));
-console.log(tree.levelOrder());
+console.log(tree.postOrder());
