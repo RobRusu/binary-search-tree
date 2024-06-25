@@ -366,7 +366,17 @@ class Tree {
     return array;
   }
 
-  height(node) {}
+  height(node) {
+    // base case
+    if (node === null) return -1;
+
+    // recursively calculate height of left subtree and right subtree
+    let heightLeft = this.height(node.left);
+    let heightRight = this.height(node.right);
+
+    // return max height of left and right subtree and add 1
+    return Math.max(heightLeft, heightRight) + 1;
+  }
 
   depth(node) {
     let root = this.root;
@@ -410,16 +420,8 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
-tree.insert(19);
-tree.insert(18);
-tree.insert(17);
-tree.insert(13);
-tree.insert(5783);
-tree.insert(5721);
-tree.insert(3192);
-tree.insert(5812);
-tree.insert(5999);
 console.log(prettyPrint(tree.root));
+console.log(tree.postOrder());
 
-const node = tree.find(23);
-console.log(tree.depth(node));
+const node = tree.find(8);
+console.log(tree.height(node));
