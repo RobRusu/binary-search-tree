@@ -365,6 +365,29 @@ class Tree {
     // return array of elements in post order
     return array;
   }
+
+  height(node) {}
+
+  depth(node) {
+    let root = this.root;
+    let depth = 0;
+
+    // if given node is empty then return
+    if (node === null) return;
+
+    // traverse the tree until node is found and increment depth for each loop
+    while (root.data !== node.data) {
+      if (node.data < root.data) {
+        root = root.left;
+      } else {
+        root = root.right;
+      }
+      depth++;
+    }
+
+    // return depth of the given node
+    return depth;
+  }
 }
 
 //testing in CLI
@@ -387,6 +410,16 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
-console.log(tree.root);
+tree.insert(19);
+tree.insert(18);
+tree.insert(17);
+tree.insert(13);
+tree.insert(5783);
+tree.insert(5721);
+tree.insert(3192);
+tree.insert(5812);
+tree.insert(5999);
 console.log(prettyPrint(tree.root));
-console.log(tree.postOrder());
+
+const node = tree.find(23);
+console.log(tree.depth(node));
