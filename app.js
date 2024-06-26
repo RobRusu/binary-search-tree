@@ -398,6 +398,20 @@ class Tree {
     // return depth of the given node
     return depth;
   }
+
+  isBalanced() {
+    let root = this.root;
+
+    // calculate height of right and left side
+    let rightHeight = this.height(root.right);
+    let leftHeight = this.height(root.left);
+
+    // check if the difference between right and left is more than 1 and return false if it is
+    if (rightHeight - leftHeight > 1 || leftHeight - rightHeight > 1)
+      return false;
+    // otherwise return true
+    return true;
+  }
 }
 
 //testing in CLI
@@ -421,7 +435,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 };
 
 console.log(prettyPrint(tree.root));
-console.log(tree.postOrder());
 
 const node = tree.find(8);
-console.log(tree.height(node));
+console.log(tree.isBalanced());
